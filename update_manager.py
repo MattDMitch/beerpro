@@ -1,12 +1,10 @@
 # update_manager.py — OTA software update system
 #
 # Flow:
-#   1. User pastes a URL into the Settings page pointing to a .zip archive
-#   2. check_update(url)  — downloads manifest.json from <url>.manifest or
-#                           reads manifest.json inside the zip (headers-only fetch)
-#   3. apply_update(url)  — downloads zip, verifies SHA256, backs up current app,
-#                           extracts new files, re-installs pip deps, restarts service
-#   4. rollback()         — restores the most recent backup
+#   1. check_update()   — fetches manifest from the hardcoded GitHub release URL
+#   2. apply_update()   — downloads zip, verifies SHA256, backs up current app,
+#                         extracts new files, re-installs pip deps, restarts service
+#   3. rollback()       — restores the most recent backup
 #
 # Update zip structure expected:
 #   manifest.json
@@ -41,6 +39,10 @@ logger = logging.getLogger(__name__)
 APP_DIR      = Path(__file__).parent.resolve()
 VERSION_FILE = APP_DIR / "VERSION"
 DATA_DIR     = Path("/data") if Path("/data").is_mount() else APP_DIR
+
+# Stable release URL — /releases/latest/download/ always redirects to the
+# most recent GitHub release asset with this name.
+UPDATE_URL = "https://github.com/MattDMitch/beerpro/releases/latest/download/beerpro-latest.zip"
 BACKUP_DIR   = DATA_DIR / "backups" / "beerpro-prev"
 VENV_PIP     = APP_DIR / ".venv" / "bin" / "pip"
 

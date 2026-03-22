@@ -456,7 +456,6 @@ handleHash();
 // Software update UI (inside Settings view)
 // ----------------------------------------------------------------
 
-const $updateUrl          = document.getElementById('update-url');
 const $btnUpdateCheck     = document.getElementById('btn-update-check');
 const $btnUpdateApply     = document.getElementById('btn-update-apply');
 const $btnUpdateRollback  = document.getElementById('btn-update-rollback');
@@ -466,21 +465,13 @@ const $updateProgressWrap = document.getElementById('update-progress-wrap');
 const $updateProgressFill = document.getElementById('update-progress-fill');
 const $updateProgressLabel = document.getElementById('update-progress-label');
 
-// Stable URL that always points to the latest GitHub release asset
-const UPDATE_URL = 'https://github.com/MattDMitch/beerpro/releases/latest/download/beerpro-latest.zip';
-
-// Fetch and display current version on page load, and pre-populate update URL
+// Fetch and display current version on page load
 async function loadCurrentVersion() {
   try {
     const res = await fetch('/api/update/version');
     const data = await res.json();
     if ($updateCurrentVer) $updateCurrentVer.textContent = 'v' + data.version;
   } catch { /* non-fatal */ }
-
-  // Pre-populate the update URL field so the user can just hit Check
-  if ($updateUrl && !$updateUrl.value) {
-    $updateUrl.value = UPDATE_URL;
-  }
 }
 
 function setUpdateInfo(msg, type) {
@@ -531,24 +522,15 @@ function handleUpdateMessage(msg) {
   }
 }
 
-let _pendingUpdateUrl = '';
-
 if ($btnUpdateCheck) {
   $btnUpdateCheck.addEventListener('click', async () => {
-    const url = $updateUrl ? $updateUrl.value.trim() : '';
-    if (!url) { setUpdateInfo('Enter an update URL first.', 'error'); return; }
-
     $btnUpdateCheck.disabled = true;
     $btnUpdateCheck.textContent = 'Checking…';
     setUpdateInfo('', 'info');
     if ($btnUpdateApply) $btnUpdateApply.disabled = true;
 
     try {
-      const res = await fetch('/api/update/check', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url }),
-      });
+      const res = await fetch('/api/update/check', { method: 'POST' });
       const data = await res.json();
 
       if (!data.ok) {
@@ -560,31 +542,26 @@ if ($btnUpdateCheck) {
           `. Current: v${data.current_version}`,
           'ok'
         );
-        _pendingUpdateUrl = url;
-        if ($btnUpdateApply) { $btnUpdateApply.disabled = false; }
+        if ($btnUpdateApply) $btnUpdateApply.disabled = false;
       } else {
         setUpdateInfo(
-          `Already on latest (v${data.current_version}).` +
-          (data.new_version ? ` Package is v${data.new_version}.` : ''),
+          `Already up to date (v${data.current_version}).`,
           'info'
         );
-        _pendingUpdateUrl = url;
         if ($btnUpdateApply) $btnUpdateApply.disabled = false; // allow force-apply
       }
     } catch {
       setUpdateInfo('Request failed. Check connection.', 'error');
     } finally {
       $btnUpdateCheck.disabled = false;
-      $btnUpdateCheck.textContent = 'Check';
+      $btnUpdateCheck.textContent = 'Check for Updates';
     }
   });
 }
 
 if ($btnUpdateApply) {
   $btnUpdateApply.addEventListener('click', async () => {
-    const url = _pendingUpdateUrl || ($updateUrl ? $updateUrl.value.trim() : '');
-    if (!url) { setUpdateInfo('Enter an update URL first.', 'error'); return; }
-    if (!confirm(`Apply update from:\n${url}\n\nThe device will restart automatically.`)) return;
+    if (!confirm('Apply update and restart the device?')) return;
 
     $btnUpdateApply.disabled = true;
     $btnUpdateApply.textContent = 'Updating…';
@@ -594,11 +571,7 @@ if ($btnUpdateApply) {
     setUpdateProgress('Starting…', 0);
 
     try {
-      await fetch('/api/update/apply', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url }),
-      });
+      await fetch('/api/update/apply', { method: 'POST' });
       // Progress and completion come via WebSocket
     } catch {
       setUpdateInfo('Failed to start update. Check connection.', 'error');

@@ -259,36 +259,26 @@ async def api_update_version():
 
 
 @app.post("/api/update/check")
-async def api_update_check(request: Request):
+async def api_update_check():
     """
-    Check if an update is available at the given URL.
-    Body: { "url": "https://..." }
+    Check if an update is available from the hardcoded GitHub release URL.
     Returns: { ok, current_version, new_version, changelog, is_newer, error }
     """
-    body = await request.json()
-    url = body.get("url", "").strip()
-    if not url:
-        return JSONResponse({"ok": False, "error": "URL is required"}, status_code=400)
-
     loop = asyncio.get_running_loop()
-    result = await loop.run_in_executor(None, update_manager.check_update, url)
+    result = await loop.run_in_executor(
+        None, update_manager.check_update, update_manager.UPDATE_URL
+    )
     return JSONResponse(result)
 
 
 @app.post("/api/update/apply")
-async def api_update_apply(request: Request):
+async def api_update_apply():
     """
-    Download and apply an update from the given URL.
-    Body: { "url": "https://..." }
+    Download and apply an update from the hardcoded GitHub release URL.
     Progress is broadcast over WebSocket as { type: "update_progress", stage, pct }.
     On completion broadcasts { type: "update_complete", version } or { type: "update_failed", error }.
     Returns immediately with { ok: true, message: "Update started" }.
     """
-    body = await request.json()
-    url = body.get("url", "").strip()
-    if not url:
-        return JSONResponse({"ok": False, "error": "URL is required"}, status_code=400)
-
     async def _run_update():
         # Capture the running loop BEFORE entering the thread executor so the
         # _progress callback (which runs in a worker thread) can schedule
@@ -302,7 +292,7 @@ async def api_update_apply(request: Request):
             )
 
         result = await loop.run_in_executor(
-            None, update_manager.apply_update, url, _progress
+            None, update_manager.apply_update, update_manager.UPDATE_URL, _progress
         )
 
         if result["ok"]:
