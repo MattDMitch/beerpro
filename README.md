@@ -434,12 +434,18 @@ cat > beerpro-v1.2.0.zip.manifest << EOF
 }
 EOF
 
-# 8. Create GitHub release with both files as assets
+# 8. Create stable-named alias (the pre-populated URL in the app points here)
+cp beerpro-v1.2.0.zip beerpro-latest.zip
+cp beerpro-v1.2.0.zip.manifest beerpro-latest.zip.manifest
+
+# 9. Create GitHub release — upload versioned AND stable-named assets
 gh release create v1.2.0 \
   --title "v1.2.0 — Description" \
   --notes-file CHANGELOG.md \
   beerpro-v1.2.0.zip \
-  beerpro-v1.2.0.zip.manifest
+  beerpro-v1.2.0.zip.manifest \
+  beerpro-latest.zip \
+  beerpro-latest.zip.manifest
 ```
 
 The release zip URL can then be pasted directly into the Beer Pro **Settings → Update URL** field.

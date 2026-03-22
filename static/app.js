@@ -466,13 +466,21 @@ const $updateProgressWrap = document.getElementById('update-progress-wrap');
 const $updateProgressFill = document.getElementById('update-progress-fill');
 const $updateProgressLabel = document.getElementById('update-progress-label');
 
-// Fetch and display current version on page load
+// Stable URL that always points to the latest GitHub release asset
+const UPDATE_URL = 'https://github.com/MattDMitch/beerpro/releases/latest/download/beerpro-latest.zip';
+
+// Fetch and display current version on page load, and pre-populate update URL
 async function loadCurrentVersion() {
   try {
     const res = await fetch('/api/update/version');
     const data = await res.json();
     if ($updateCurrentVer) $updateCurrentVer.textContent = 'v' + data.version;
   } catch { /* non-fatal */ }
+
+  // Pre-populate the update URL field so the user can just hit Check
+  if ($updateUrl && !$updateUrl.value) {
+    $updateUrl.value = UPDATE_URL;
+  }
 }
 
 function setUpdateInfo(msg, type) {
