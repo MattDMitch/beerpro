@@ -1,0 +1,10 @@
+python3-pip
+python3-venv
+python3-systemd
+libopencv-dev
+libatlas-base-dev
+curl
+wget
+git
+net-tools
+libcap2-bin

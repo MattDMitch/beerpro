@@ -1,0 +1,16 @@
+[Unit]
+Description=Beer Pro Chromium Kiosk Display
+After=beerpro.service graphical.target
+Wants=beerpro.service
+
+[Service]
+Type=simple
+User=pi
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/home/pi/.Xauthority
+ExecStart=/bin/bash /home/pi/beerpro/scripts/kiosk.sh
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=graphical.target

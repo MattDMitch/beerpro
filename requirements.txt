@@ -1,0 +1,27 @@
+# Beer Pro — Python dependencies
+#
+# On Raspberry Pi (Linux):
+#   pip install -r requirements.txt
+#
+# On macOS/Windows (dev/testing):
+#   pip install -r requirements.txt --ignore-requires-python
+#   NOTE: evdev will be skipped automatically (Linux-only).
+#         Use the line below instead:
+#   pip install fastapi "uvicorn[standard]" opencv-python-headless
+
+# Web framework + async server
+fastapi
+uvicorn[standard]
+
+# SSL CA bundle — ensures HTTPS works on Pi OS where system CAs may be stale
+certifi
+
+# Camera capture
+opencv-python-headless
+
+# Linux USB input — Pi only. Will fail on macOS/Windows; install separately on Pi:
+#   pip install evdev
+# evdev==1.7.0
+
+# Optional: keyboard input on macOS/Windows for dev/testing (type 1-5 in terminal)
+# pynput

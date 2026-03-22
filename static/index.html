@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Beer Pro</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       SCOREBOARD VIEW (default)
+  ============================================================ -->
+  <div id="view-scoreboard" class="view active">
+
+    <header class="app-header">
+      <div class="logo">BEER <span class="logo-accent">PRO</span></div>
+      <div class="match-record" id="match-record">0 — 0</div>
+    </header>
+
+    <main class="scoreboard">
+
+      <div class="team team--left" id="team1-panel">
+        <div class="team-name" id="team1-name">Team 1</div>
+        <div class="score" id="score-t1">00</div>
+        <div class="score-trail" id="trail-t1"></div>
+      </div>
+
+      <div class="divider">
+        <div class="divider-line"></div>
+        <div class="divider-label">VS</div>
+        <div class="divider-line"></div>
+      </div>
+
+      <div class="team team--right" id="team2-panel">
+        <div class="team-name" id="team2-name">Team 2</div>
+        <div class="score" id="score-t2">00</div>
+        <div class="score-trail" id="trail-t2"></div>
+      </div>
+
+    </main>
+
+    <footer class="app-footer">
+      <div class="footer-left">
+        <span class="wifi-label">WIFI: BeerPro &nbsp;|&nbsp; beerpro.local</span>
+      </div>
+      <div class="footer-right">
+        <a href="#settings" class="settings-btn" id="settings-link">Settings</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ============================================================
+       MOBILE CONTROLS (shown only on touch/mobile devices)
+  ============================================================ -->
+  <div id="mobile-controls" class="mobile-controls hidden">
+
+    <div class="mobile-controls-inner">
+
+      <div class="mobile-team-col">
+        <div class="mobile-team-label" id="mobile-label-t1">Team 1</div>
+        <button class="mobile-btn mobile-btn--up"   id="mbtn-t1-up">+</button>
+        <button class="mobile-btn mobile-btn--down" id="mbtn-t1-down">−</button>
+      </div>
+
+      <div class="mobile-center-col">
+        <button class="mobile-btn mobile-btn--replay" id="mbtn-replay">&#9654; REPLAY</button>
+      </div>
+
+      <div class="mobile-team-col">
+        <div class="mobile-team-label" id="mobile-label-t2">Team 2</div>
+        <button class="mobile-btn mobile-btn--up"   id="mbtn-t2-up">+</button>
+        <button class="mobile-btn mobile-btn--down" id="mbtn-t2-down">−</button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ============================================================
+       REPLAY VIEW
+  ============================================================ -->
+  <div id="view-replay" class="view">
+
+    <div class="replay-bg">
+      <img id="replay-img" src="" alt="Replay" />
+      <div class="replay-badge">
+        <span class="replay-dot"></span>
+        REPLAY
+      </div>
+      <div class="replay-hint">Press any key to return</div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================
+       GAME OVER VIEW
+  ============================================================ -->
+  <div id="view-gameover" class="view">
+
+    <div class="gameover-wrap">
+      <div class="gameover-label">WINNER</div>
+      <div class="gameover-team" id="gameover-team">—</div>
+      <div class="gameover-score" id="gameover-score"></div>
+      <div class="gameover-match" id="gameover-match"></div>
+      <div class="gameover-hint">Press any key for a new game</div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================
+       SETTINGS VIEW
+  ============================================================ -->
+  <div id="view-settings" class="view">
+
+    <div class="settings-wrap">
+      <div class="settings-header">
+        <span class="logo">BEER <span class="logo-accent">PRO</span></span>
+        <span class="settings-title">Settings</span>
+      </div>
+
+      <form id="settings-form" class="settings-form" autocomplete="off">
+
+        <div class="field-group">
+          <label for="input-team1">Team 1 Name</label>
+          <input id="input-team1" type="text" maxlength="20" placeholder="Team 1" />
+        </div>
+
+        <div class="field-group">
+          <label for="input-team2">Team 2 Name</label>
+          <input id="input-team2" type="text" maxlength="20" placeholder="Team 2" />
+        </div>
+
+        <div class="settings-actions">
+          <button type="submit" class="btn btn--primary">Apply</button>
+          <button type="button" class="btn btn--danger" id="btn-reset-match">Reset Match</button>
+          <button type="button" class="btn btn--ghost" id="btn-back">Back</button>
+        </div>
+
+        <div class="settings-actions" style="margin-top:0.4rem;">
+          <button type="button" class="btn btn--ghost" id="btn-change-wifi" style="width:100%;">&#8644; Change WiFi Network</button>
+        </div>
+
+        <div class="settings-status" id="settings-status"></div>
+
+      </form>
+
+        <!-- ── Software Update ──────────────────────────────── -->
+        <div class="update-section">
+          <div class="update-section-title">Software Update</div>
+
+          <div class="update-version-row">
+            <span class="update-version-label">Installed version:</span>
+            <span class="update-version-val" id="update-current-version">—</span>
+          </div>
+
+          <div class="field-group">
+            <label for="update-url">Update URL</label>
+            <input id="update-url" type="url" placeholder="https://example.com/beerpro-v1.1.zip" autocomplete="off" />
+          </div>
+
+          <div class="update-actions">
+            <button type="button" class="btn btn--ghost" id="btn-update-check">Check</button>
+            <button type="button" class="btn btn--primary" id="btn-update-apply" disabled>Apply Update</button>
+            <button type="button" class="btn btn--ghost" id="btn-update-rollback">&#8630; Rollback</button>
+          </div>
+
+          <div class="update-info" id="update-info"></div>
+
+          <div class="update-progress-wrap hidden" id="update-progress-wrap">
+            <div class="update-progress-bar">
+              <div class="update-progress-fill" id="update-progress-fill"></div>
+            </div>
+            <div class="update-progress-label" id="update-progress-label">Starting…</div>
+          </div>
+        </div>
+
+        <div class="settings-info">
+        <div class="info-row">
+          <span class="info-key">Key 1</span><span class="info-val">Team 1 point +1</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Key 2</span><span class="info-val">Team 1 point -1</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Key 3</span><span class="info-val">Team 2 point +1</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Key 4</span><span class="info-val">Team 2 point -1</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Key 5</span><span class="info-val">Slow-mo replay</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================
+       TV SETUP SPLASH (shown on HDMI during first-boot setup)
+  ============================================================ -->
+  <div id="view-tv-setup" class="view">
+    <div class="tv-setup-wrap">
+
+      <div class="tv-setup-logo">BEER <span class="logo-accent">PRO</span></div>
+      <div class="tv-setup-title">First-Time Setup</div>
+
+      <div class="tv-setup-steps">
+
+        <div class="tv-setup-step">
+          <span class="tv-step-num">1</span>
+          <span class="tv-step-text">
+            Connect your phone to WiFi:<br>
+            <strong class="tv-highlight">BeerPro-Setup</strong>
+            <span class="tv-step-sub">(no password required)</span>
+          </span>
+        </div>
+
+        <div class="tv-setup-step">
+          <span class="tv-step-num">2</span>
+          <span class="tv-step-text">
+            Open your browser and go to:<br>
+            <strong class="tv-highlight">192.168.4.1:8080</strong>
+            <span class="tv-step-sub">or beerpro.local</span>
+          </span>
+        </div>
+
+        <div class="tv-setup-step">
+          <span class="tv-step-num">3</span>
+          <span class="tv-step-text">
+            Follow the on-screen instructions<br>to connect Beer Pro to your WiFi.
+          </span>
+        </div>
+
+      </div>
+
+      <div class="tv-setup-qr">
+        <div id="tv-qr-code"></div>
+        <div class="tv-qr-label">Scan to open setup</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       PHONE SETUP VIEW (WiFi connect form, shown on mobile)
+  ============================================================ -->
+  <div id="view-setup" class="view">
+    <div class="setup-wrap">
+
+      <div class="setup-header">
+        <div class="logo">BEER <span class="logo-accent">PRO</span></div>
+        <div class="setup-subtitle">Connect to WiFi</div>
+      </div>
+
+      <div class="setup-body">
+
+        <div class="setup-scan-row">
+          <span class="setup-section-label">Select your network</span>
+          <button class="setup-scan-btn" id="btn-scan">&#8635; Scan</button>
+        </div>
+
+        <div class="setup-network-list" id="network-list">
+          <div class="setup-scanning" id="scan-placeholder">
+            <span class="setup-spinner"></span> Scanning…
+          </div>
+        </div>
+
+        <form id="setup-form" class="setup-form" autocomplete="off">
+          <div class="field-group">
+            <label for="setup-ssid">Network name (SSID)</label>
+            <input id="setup-ssid" type="text" maxlength="64" placeholder="Your WiFi name" autocomplete="off" />
+          </div>
+
+          <div class="field-group">
+            <label for="setup-password">Password</label>
+            <div class="setup-pw-row">
+              <input id="setup-password" type="password" maxlength="64" placeholder="WiFi password" autocomplete="off" />
+              <button type="button" class="setup-pw-toggle" id="btn-pw-toggle" aria-label="Show password">&#128065;</button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn--primary setup-connect-btn" id="btn-connect">
+            Connect
+          </button>
+
+          <div class="setup-status" id="setup-status"></div>
+        </form>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- QR code library (loaded inline, no build step) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
+          integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSt2Jd9IkYFG3HnAq2rOBCfF8JCFqSGSBKQ=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+# Beer Pro — openbox autostart
+# Disable screen saver and power management
+xset s off &
+xset s noblank &
+xset -dpms &
+
+# Launch Beer Pro kiosk
+bash /home/pi/beerpro/scripts/kiosk.sh &
