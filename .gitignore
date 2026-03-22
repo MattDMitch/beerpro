@@ -36,3 +36,6 @@ backups/
 # Release zip artifacts (hosted as GitHub Release assets, not in repo)
 *.zip
 *.zip.manifest
+
+# Pi image builder — tracked separately
+image/

@@ -1,6 +1,0 @@
-hostapd
-dnsmasq
-avahi-daemon
-iptables-persistent
-netfilter-persistent
-iw
